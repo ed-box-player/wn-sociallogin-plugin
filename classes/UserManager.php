@@ -63,6 +63,13 @@ class UserManager
         if (!$provider) {
             // Does a user with this email exist?
             $user = Auth::findUserByLogin($user_details->email);
+            
+            // Some login providers don't return an email address. Use their
+            // identifier with @dev.null instead.
+            if(!$user) {
+                $user = Auth::findUserByLogin($user_details->identifier.'@dev.null');
+            }
+            
             // No user with this email exists - create one
             if (!$user) {
                 if (UserSettings::get('allow_registration')) {
